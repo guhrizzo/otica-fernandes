@@ -32,3 +32,23 @@ a { color: inherit; text-decoration: none; }
 .values-section { display: grid; gap: 9vw; grid-template-columns: 1fr 1.35fr; padding: 120px 7vw; }.values-grid { display: grid; gap: 36px; grid-template-columns: repeat(3, 1fr); padding-top: 55px; }.values-grid svg { color: var(--red); }.values-grid h3 { font-size: 16px; margin: 20px 0 10px; }.values-grid p { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
 .contact-section { align-items: center; background: var(--red); color: white; display: flex; justify-content: space-between; padding: 90px 7vw; }.contact-section h2 em { color: var(--yellow); }.contact-info { display: flex; flex-direction: column; gap: 25px; }.contact-info p { align-items: start; display: grid; font-size: 14px; gap: 11px; grid-template-columns: 20px 1fr; line-height: 1.55; margin: 0; }.contact-info p span { color: #f0b4bd; grid-column: 2; margin-top: -10px; }.footer { align-items: center; background: #0b0b0b; color: white; display: grid; gap: 20px; grid-template-columns: 1fr 1fr 1fr; padding: 38px 7vw; }.footer p { color: #999; font-size: 11px; text-align: center; }.footer small { color: #777; font-size: 10px; text-align: right; }.footer-credit { align-items: flex-end; display: flex; flex-direction: column; gap: 4px; }.footer-credit a { color: #999; text-decoration: underline; transition: color .2s; }.footer-credit a:hover { color: white; }
 @media (max-width: 800px) { .site-header { height: 68px; }.brand img { height: 38px; }.desktop-nav { display: none; }.menu-button { background: none; border: 0; display: block; padding: 7px; }.mobile-nav { background: var(--cream); border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 21px; left: 0; padding: 25px; position: absolute; right: 0; top: 68px; }.mobile-nav a { font-size: 14px; font-weight: 700; }.hero { display: flex; flex-direction: column; }.hero-copy { padding: 75px 24px 55px; }.hero h1 { font-size: 65px; }.hero-visual { min-height: 430px; }.category-strip { grid-template-columns: 1fr; }.category-card { min-height: 110px; }.section { padding: 82px 24px; }.section-heading { align-items: start; flex-direction: column; gap: 28px; }.products-grid { grid-template-columns: 1fr; }.product-image { height: 360px; }.story-section { display: block; padding: 75px 24px; }.story-label { margin-bottom: 65px; }.story-number { margin-top: 70px; }.gallery-slide { height: 320px; }.gallery-arrow { height: 38px; width: 38px; }.values-section { display: block; padding: 80px 24px; }.values-grid { gap: 32px; grid-template-columns: 1fr; padding-top: 50px; }.contact-section { align-items: start; flex-direction: column; gap: 55px; padding: 75px 24px; }.footer { display: flex; flex-direction: column; text-align: center; }.brand-footer { align-self: center; }.footer small, .footer p { text-align: center; }.footer-credit { align-items: center; } }
+.contact-section { flex-wrap: wrap; }
+.contact-info a { text-decoration: underline; text-underline-offset: 3px; }
+.contact-info a:hover { color: var(--yellow); }
+.contact-info .contact-social { display: flex; flex-direction: column; gap: 6px; }
+.stores-grid { display: grid; flex: 0 0 100%; gap: 20px; grid-template-columns: repeat(3, 1fr); margin-top: 60px; }
+.store-card { background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.2); display: flex; flex-direction: column; gap: 14px; padding: 26px; }
+.store-card h3 { align-items: baseline; display: flex; font-size: 22px; gap: 10px; letter-spacing: -.04em; margin: 0; }
+.store-card h3 small { color: var(--yellow); font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.store-address { align-items: start; display: flex; font-size: 14px; gap: 9px; line-height: 1.5; margin: 0; }
+.store-address svg { flex: none; margin-top: 2px; }
+.store-actions { display: flex; flex-direction: column; font-size: 14px; gap: 8px; margin-top: auto; }
+.store-actions a { align-items: center; display: inline-flex; gap: 8px; }
+.store-actions a:hover { color: var(--yellow); }
+@media (max-width: 800px) { .stores-grid { grid-template-columns: 1fr; margin-top: 0; } }
+.store-address a { text-decoration: underline; text-underline-offset: 3px; }
+.store-address a:hover { color: var(--yellow); }
+.store-card { background-color: rgba(0,0,0,.18); background-position: center; background-size: cover; min-height: 260px; }
+.store-card h3, .store-address, .store-actions { text-shadow: 0 1px 6px rgba(0,0,0,.55); }
+.store-card { min-height: 300px; }
+.store-card { border: 0; }
