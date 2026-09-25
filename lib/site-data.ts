@@ -61,7 +61,7 @@ const fallbackGallery: GalleryImage[] = [
   { id: "fallback-5", url: "/gallery/loja-orient.jpg", alt: "Expositor de relógios Orient" },
 ];
 
-const fallbackSettings: SiteSettings = {
+export const fallbackSettings: SiteSettings = {
   hero_eyebrow: "Desde 1976 em Pederneiras",
   hero_text: "Óculos, joias e relógios escolhidos para acompanhar a sua história, o seu ritmo e o seu jeito de ser.",
   story_text:
