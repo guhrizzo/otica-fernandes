@@ -75,11 +75,11 @@ function LoginForm() {
         <h1>Painel administrativo</h1>
         <label>
           E-mail
-          <input type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="email" autoComplete="email" required placeholder="voce@oticafernandes.com.br" value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <label>
           Senha
-          <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" autoComplete="current-password" required placeholder="Sua senha" value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
         {error && <p className="admin-error" role="alert">{error}</p>}
         <button className="button button-red" type="submit" disabled={loading}>{loading ? "Entrando…" : "Entrar"}</button>

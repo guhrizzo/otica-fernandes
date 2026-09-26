@@ -11,6 +11,7 @@
 .admin-shell label { color: #484848; display: flex; flex-direction: column; font-size: 12px; font-weight: 700; gap: 7px; letter-spacing: .02em; }
 .admin-shell input:not([type="file"]) { background: var(--cream); border: 1px solid var(--line); color: var(--ink); font-size: 15px; font-weight: 400; outline: none; padding: 12px 13px; transition: border-color .2s; }
 .admin-shell input:not([type="file"]):focus { border-color: var(--red); }
+.admin-shell input::placeholder, .admin-shell textarea::placeholder { color: #a8a39a; opacity: 1; }
 .admin-shell .button { border: 0; cursor: pointer; justify-content: center; }
 .admin-shell .button:disabled { cursor: default; opacity: .6; transform: none; }
 

@@ -11,6 +11,7 @@ import { revalidateHome } from "./actions";
 type Field = {
   key: keyof SiteSettings;
   label: string;
+  placeholder: string;
   hint?: string;
   multiline?: boolean;
   inputMode?: "numeric";
@@ -21,32 +22,32 @@ const sections: { title: string; description: string; fields: Field[] }[] = [
     title: "Início",
     description: "Topo da página, logo abaixo do menu.",
     fields: [
-      { key: "hero_eyebrow", label: "Frase de destaque", hint: "Texto curto em vermelho acima do título." },
-      { key: "hero_text", label: "Texto de apresentação", multiline: true },
+      { key: "hero_eyebrow", label: "Frase de destaque", placeholder: "Desde 1976 em Pederneiras", hint: "Texto curto em vermelho acima do título." },
+      { key: "hero_text", label: "Texto de apresentação", placeholder: "Óculos, joias e relógios escolhidos para acompanhar a sua história…", multiline: true },
     ],
   },
   {
     title: "Nossa história",
     description: "Seção “História”.",
     fields: [
-      { key: "story_text", label: "Texto", multiline: true },
-      { key: "story_years", label: "Anos de história", hint: "Aparece em destaque, seguido da palavra “anos”.", inputMode: "numeric" },
+      { key: "story_text", label: "Texto", placeholder: "Conte a história da ótica…", multiline: true },
+      { key: "story_years", label: "Anos de história", placeholder: "50", hint: "Aparece em destaque, seguido da palavra “anos”.", inputMode: "numeric" },
     ],
   },
   {
     title: "Horário de funcionamento",
     description: "Seção de contato.",
     fields: [
-      { key: "hours_weekday", label: "Dias de semana" },
-      { key: "hours_saturday", label: "Sábado" },
+      { key: "hours_weekday", label: "Dias de semana", placeholder: "Segunda a sexta, 9h às 18h" },
+      { key: "hours_saturday", label: "Sábado", placeholder: "Sábado, 9h às 13h" },
     ],
   },
   {
     title: "WhatsApp",
     description: "Botão flutuante e links de WhatsApp das lojas.",
     fields: [
-      { key: "whatsapp_number", label: "Número do botão flutuante", hint: "Com código do país e DDD, só números. Ex.: 5514999040617", inputMode: "numeric" },
-      { key: "whatsapp_message", label: "Mensagem inicial", hint: "Já vem escrita quando o cliente abre a conversa." },
+      { key: "whatsapp_number", label: "Número do botão flutuante", placeholder: "5514999040617", hint: "Com código do país e DDD, só números. Ex.: 5514999040617", inputMode: "numeric" },
+      { key: "whatsapp_message", label: "Mensagem inicial", placeholder: "Olá! Gostaria de mais informações.", hint: "Já vem escrita quando o cliente abre a conversa." },
     ],
   },
 ];
@@ -128,9 +129,9 @@ export default function SettingsForm() {
                 <label key={field.key}>
                   {field.label}
                   {field.multiline ? (
-                    <textarea required rows={4} value={values[field.key]} onChange={(e) => update(field.key, e.target.value)} />
+                    <textarea required rows={4} placeholder={field.placeholder} value={values[field.key]} onChange={(e) => update(field.key, e.target.value)} />
                   ) : (
-                    <input required inputMode={field.inputMode} value={values[field.key]} onChange={(e) => update(field.key, e.target.value)} />
+                    <input required inputMode={field.inputMode} placeholder={field.placeholder} value={values[field.key]} onChange={(e) => update(field.key, e.target.value)} />
                   )}
                   {field.hint && <small>{field.hint}</small>}
                 </label>
