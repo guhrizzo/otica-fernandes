@@ -54,11 +54,14 @@ const fallbackProducts: Product[] = [
 ];
 
 const fallbackGallery: GalleryImage[] = [
-  { id: "fallback-1", url: "/gallery/loja-fachada.jpg", alt: "Fachada da Ótica Fernandes" },
-  { id: "fallback-2", url: "/gallery/loja-balcao.jpg", alt: "Balcão de atendimento com óculos e relógios" },
-  { id: "fallback-3", url: "/otica-loja.jpg", alt: "Parede de armações da Ótica Fernandes" },
-  { id: "fallback-4", url: "/gallery/loja-vitrine-relogios.jpg", alt: "Vitrine com relógios em exposição" },
-  { id: "fallback-5", url: "/gallery/loja-orient.jpg", alt: "Expositor de relógios Orient" },
+  { id: "fallback-1", url: "/gallery/fachada-portico.jpg", alt: "Pórtico vermelho na entrada da Ótica Fernandes" },
+  { id: "fallback-2", url: "/gallery/salao-atendimento.jpg", alt: "Salão de atendimento com poltronas e expositores de óculos" },
+  { id: "fallback-3", url: "/gallery/recepcao.jpg", alt: "Recepção com painel da Ótica Fernandes e parede verde" },
+  { id: "fallback-4", url: "/gallery/vitrine-joias.jpg", alt: "Vitrine de vidro com joias e semijoias" },
+  { id: "fallback-5", url: "/gallery/entrada-loja-2.jpg", alt: "Entrada da loja com tapete Fernandes e expositores" },
+  { id: "fallback-6", url: "/gallery/parede-relogios.jpg", alt: "Parede de relógios Lince, Mondaine e outras marcas" },
+  { id: "fallback-7", url: "/gallery/torres-orient.jpg", alt: "Torres de vidro com relógios Orient" },
+  { id: "fallback-8", url: "/gallery/cantinho-criancas.jpg", alt: "Cantinho das crianças com mesa e cadeiras vermelhas" },
 ];
 
 export const fallbackSettings: SiteSettings = {
