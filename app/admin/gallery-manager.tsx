@@ -136,7 +136,7 @@ export default function GalleryManager() {
       <div className="admin-title-row">
         <div>
           <h1>Galeria</h1>
-          <p className="admin-muted">Fotos do carrossel da loja, exibidas nesta ordem.</p>
+          <p className="admin-muted">Fotos da galeria “Nossa loja”, exibidas em mosaico nesta ordem. No site, tocar numa foto abre ela em tela cheia com zoom.</p>
         </div>
         <button className="button button-red" onClick={() => openEditor()}>
           <Plus size={17} /> Nova foto

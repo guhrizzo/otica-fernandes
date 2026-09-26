@@ -4,8 +4,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
   Clock3,
   Gem,
   Glasses,
@@ -20,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { contactLinks, stores } from "@/lib/site-data";
+import GalleryMasonry from "./gallery-masonry";
 import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data";
 
 const categories = [
@@ -43,20 +42,6 @@ type HomeClientProps = {
 
 export default function HomeClient({ products, galleryImages, settings }: HomeClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [galleryIndex, setGalleryIndex] = useState(0);
-  const [galleryPaused, setGalleryPaused] = useState(false);
-
-  const goToGallerySlide = (index: number) => {
-    setGalleryIndex((index + galleryImages.length) % galleryImages.length);
-  };
-
-  useEffect(() => {
-    if (galleryPaused || galleryImages.length === 0) return;
-    const timer = setInterval(() => {
-      setGalleryIndex((current) => (current + 1) % galleryImages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [galleryPaused, galleryImages.length]);
 
   useEffect(() => {
     const revealEls = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
@@ -126,36 +111,7 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
 
       <section className="section gallery-section reveal">
         <div className="section-heading"><div><p className="eyebrow"><span /> Nossa loja</p><h2>Um passeio pelo<br /><em>nosso espaço.</em></h2></div></div>
-        <div
-          className="gallery-carousel"
-          onMouseEnter={() => setGalleryPaused(true)}
-          onMouseLeave={() => setGalleryPaused(false)}
-        >
-          <div className="gallery-track" style={{ transform: `translateX(-${galleryIndex * 100}%)` }}>
-            {galleryImages.map((image) => (
-              <div className="gallery-slide" key={image.id}>
-                <Image className="gallery-slide-bg" src={image.url} alt="" aria-hidden fill sizes="100vw" />
-                <Image className="gallery-slide-fg" src={image.url} alt={image.alt} fill sizes="100vw" />
-              </div>
-            ))}
-          </div>
-          <button className="gallery-arrow gallery-arrow-prev" onClick={() => goToGallerySlide(galleryIndex - 1)} aria-label="Foto anterior">
-            <ChevronLeft size={20} />
-          </button>
-          <button className="gallery-arrow gallery-arrow-next" onClick={() => goToGallerySlide(galleryIndex + 1)} aria-label="Próxima foto">
-            <ChevronRight size={20} />
-          </button>
-          <div className="gallery-dots">
-            {galleryImages.map((image, index) => (
-              <button
-                key={image.id}
-                className={`gallery-dot ${index === galleryIndex ? "is-active" : ""}`}
-                onClick={() => goToGallerySlide(index)}
-                aria-label={`Ir para foto ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+        <GalleryMasonry images={galleryImages} />
       </section>
 
       <section className="values-section reveal"><div><p className="eyebrow"><span /> Por que Fernandes</p><h2>Detalhes que fazem<br /><em>toda diferença.</em></h2></div><div className="values-grid"><div><ShieldCheck /><h3>Confiança de verdade</h3><p>Atendimento próximo e transparente em cada escolha.</p></div><div><Sparkles /><h3>Curadoria especial</h3><p>Peças selecionadas para todos os estilos e momentos.</p></div><div><Heart /><h3>Feito para você</h3><p>Porque cada pessoa merece encontrar seu próprio jeito de brilhar.</p></div></div></section>
