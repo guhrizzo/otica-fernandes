@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, Clock3, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { contactLinks, stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
+import ProductPhotos from "./product-photos";
 import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data";
 
 const categories = [
@@ -51,6 +52,9 @@ const mapsUrl = (store: Store) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Ótica Fernandes, ${store.address.replace(" · ", ", ")}, ${store.city}, SP`)}`;
 
 const priceFormatter = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+
+const storeListFormatter = new Intl.ListFormat("pt-BR", { style: "long", type: "conjunction" });
+const formatStoreList = (names: string[]) => storeListFormatter.format(names);
 
 type HomeClientProps = {
   products: Product[];
@@ -195,11 +199,19 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
         <div className="products-grid">
           {products.map((product) => (
             <article className="product-card" key={product.id}>
-              <div className="product-image"><Image src={product.image_url || "/otica-hero.png"} alt={product.name} fill sizes="(max-width: 800px) 100vw, 33vw" /></div>
+              <ProductPhotos images={product.images?.length ? product.images : product.image_url ? [product.image_url] : []} name={product.name} />
               <div className="product-meta">
                 <p>{product.type}</p>
                 <h3>{product.name}</h3>
+                {product.description && <p className="product-description">{product.description}</p>}
                 <strong>{priceFormatter.format(product.price)}</strong>
+                {product.available_at && (
+                  <span className={`product-stock${product.available_at.length === 0 ? " is-out" : ""}`}>
+                    {product.available_at.length === 0
+                      ? "Sob encomenda · consulte"
+                      : `${(product.stock_total ?? 0) <= 2 ? "Últimas unidades" : "Disponível"} na ${formatStoreList(product.available_at)}`}
+                  </span>
+                )}
               </div>
               <a className="product-ask" href={whatsappUrl(settings.whatsapp_number, `Olá! Tenho interesse no ${product.name} (${priceFormatter.format(product.price)}).`)} target="_blank" rel="noopener noreferrer">Tenho interesse <ArrowUpRight size={15} /></a>
             </article>

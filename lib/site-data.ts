@@ -6,6 +6,14 @@ export type Product = {
   type: string;
   price: number;
   image_url: string | null;
+  /** Todas as fotos cadastradas no painel, em ordem; a primeira é a capa (igual a image_url). */
+  images?: string[];
+  /** Texto opcional cadastrado no painel. */
+  description?: string;
+  /** Lojas com estoque deste produto. Ausente quando o estoque não está configurado. */
+  available_at?: string[];
+  /** Total de unidades somando todas as lojas. */
+  stock_total?: number;
 };
 
 export type GalleryImage = {
@@ -78,12 +86,48 @@ export const fallbackSettings: SiteSettings = {
 
 export async function getProducts(): Promise<Product[]> {
   if (!supabase) return fallbackProducts;
+  // Banco ainda sem as colunas novas (description, images): tenta de novo sem elas
+  const data =
+    (await selectProducts("id, name, type, price, image_url, description, images")) ??
+    (await selectProducts("id, name, type, price, image_url, description")) ??
+    (await selectProducts("id, name, type, price, image_url"));
+  if (!data || data.length === 0) return fallbackProducts;
+  return withAvailability(data);
+}
+
+async function selectProducts(columns: string): Promise<Product[] | null> {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from("products")
-    .select("id, name, type, price, image_url")
-    .order("sort_order", { ascending: true });
-  if (error || !data || data.length === 0) return fallbackProducts;
-  return data;
+    .select(columns)
+    .order("sort_order", { ascending: true })
+    .returns<Product[]>();
+  return error ? null : data;
+}
+
+/** Junta ao produto as lojas onde há estoque, cadastrado pelo painel (tabelas stores e product_stock). */
+async function withAvailability(products: Product[]): Promise<Product[]> {
+  if (!supabase) return products;
+  const [storesResult, stockResult] = await Promise.all([
+    supabase.from("stores").select("id, name").order("sort_order", { ascending: true }),
+    supabase.from("product_stock").select("product_id, store_id, quantity").gt("quantity", 0),
+  ]);
+  // Sem lojas cadastradas (ou tabelas ainda não criadas): o site segue sem informação de estoque
+  if (storesResult.error || stockResult.error || !storesResult.data?.length) return products;
+
+  const storeOrder = storesResult.data.map((store) => store.id);
+  const storeNames = new Map(storesResult.data.map((store) => [store.id, store.name]));
+
+  return products.map((product) => {
+    const rows = stockResult.data
+      .filter((row) => String(row.product_id) === String(product.id))
+      .sort((a, b) => storeOrder.indexOf(a.store_id) - storeOrder.indexOf(b.store_id));
+    return {
+      ...product,
+      available_at: rows.map((row) => storeNames.get(row.store_id)).filter((name): name is string => !!name),
+      stock_total: rows.reduce((sum, row) => sum + row.quantity, 0),
+    };
+  });
 }
 
 export async function getGalleryImages(): Promise<GalleryImage[]> {
