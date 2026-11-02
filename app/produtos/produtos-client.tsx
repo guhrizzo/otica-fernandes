@@ -3,13 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Package, Search } from "lucide-react";
 import ProductCard from "../product-card";
+import SiteFooter from "../site-footer";
+import { stores } from "@/lib/site-data";
 import type { Product } from "@/lib/site-data";
 
 type Sort = "default" | "price-asc" | "price-desc";
 
 const ALL = "Todos";
+
+const navLinks = [
+  { href: "/produtos", label: "Produtos" },
+  { href: "/#historia", label: "História" },
+  { href: "/#lojas", label: "Lojas" },
+];
 
 // Compara sem acento e sem diferença de maiúscula: "relogio" encontra "Relógio".
 const normalize = (value: string) => value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -44,6 +52,7 @@ export default function ProdutosClient({ products, whatsappNumber, whatsappMessa
     setCategory(ALL);
     setStore(ALL);
   };
+  const whatsapp = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
   return (
     <main className="site-shell">
@@ -52,17 +61,25 @@ export default function ProdutosClient({ products, whatsappNumber, whatsappMessa
           <Image src="/logo.png" alt="Ótica Fernandes" width={798} height={589} priority />
         </Link>
         <nav className="desktop-nav" aria-label="Navegação principal">
-          <Link href="/" style={{ alignItems: "center", display: "inline-flex" }}><ArrowLeft size={15} aria-hidden style={{ marginRight: 6, verticalAlign: "-2px" }} />Voltar ao início</Link>
+          {navLinks.map((link) => <Link href={link.href} key={link.href} aria-current={link.href === "/produtos" ? "page" : undefined}>{link.label}</Link>)}
         </nav>
-        <a className="button button-red header-cta" href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+        <Link className="header-home" href="/">Início <ArrowRight size={15} aria-hidden /></Link>
+        <a className="button button-red header-cta" href={whatsapp} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
       </header>
 
-      <section className="section catalog-section">
-        <div className="section-heading">
-          <p className="label">Catálogo</p>
-          <h1 className="catalog-title">Todos os produtos</h1>
+      <section className="catalog-hero">
+        <div>
+          <p className="label label-light">Catálogo</p>
+          <h1>Todos os produtos</h1>
+          <p className="catalog-lead">Óculos, relógios, joias e semijoias. Escolha o que gostou e fale com a gente pelo WhatsApp para confirmar a disponibilidade na loja mais perto de você.</p>
         </div>
+        <dl className="catalog-stats">
+          <div><dt>{products.length}</dt><dd>{products.length === 1 ? "produto" : "produtos"}</dd></div>
+          <div><dt>{stores.length}</dt><dd>lojas</dd></div>
+        </dl>
+      </section>
 
+      <section className="section catalog-section">
         <div className="catalog-toolbar">
           <label className="catalog-search">
             <Search size={18} aria-hidden />
@@ -97,15 +114,32 @@ export default function ProdutosClient({ products, whatsappNumber, whatsappMessa
           </div>
         )}
 
-        <p className="catalog-count" aria-live="polite">
-          {visible.length === 1 ? "1 produto" : `${visible.length} produtos`}
-          {filtered && <button type="button" className="catalog-clear" onClick={clear}>Limpar filtros</button>}
-        </p>
+        {products.length > 0 && (
+          <p className="catalog-count" aria-live="polite">
+            {visible.length === 1 ? "1 produto" : `${visible.length} produtos`}
+            {filtered && <button type="button" className="catalog-clear" onClick={clear}>Limpar filtros</button>}
+          </p>
+        )}
 
         {products.length === 0 ? (
-          <p className="products-empty">Nenhum produto cadastrado no momento.</p>
+          <div className="catalog-empty">
+            <span className="catalog-empty-icon" aria-hidden><Package size={30} /></span>
+            <h2>Nenhum produto cadastrado no momento</h2>
+            <p>Estamos atualizando a vitrine. Fale com a gente e veja o que temos disponível nas lojas.</p>
+            <div className="catalog-empty-actions">
+              <a className="button button-red" href={whatsapp} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
+              <Link className="button button-outline" href="/">Voltar ao início</Link>
+            </div>
+          </div>
         ) : visible.length === 0 ? (
-          <p className="products-empty">Nenhum produto encontrado com esses filtros.</p>
+          <div className="catalog-empty">
+            <span className="catalog-empty-icon" aria-hidden><Search size={30} /></span>
+            <h2>Nenhum produto encontrado</h2>
+            <p>Tente outro nome ou limpe os filtros para ver tudo de novo.</p>
+            <div className="catalog-empty-actions">
+              <button type="button" className="button button-red" onClick={clear}>Limpar filtros</button>
+            </div>
+          </div>
         ) : (
           <div className="products-grid">
             {visible.map((product) => <ProductCard key={product.id} product={product} whatsappNumber={whatsappNumber} />)}
@@ -113,12 +147,18 @@ export default function ProdutosClient({ products, whatsappNumber, whatsappMessa
         )}
       </section>
 
-      <footer className="footer">
-        <div className="footer-credit">
-          <small>© {new Date().getFullYear()} Ótica Fernandes. Feito com cuidado em Pederneiras.</small>
-          <small><Link href="/">Voltar ao início</Link></small>
+      <section className="catalog-cta">
+        <div>
+          <h2>Não encontrou o que procurava?</h2>
+          <p>Temos muito mais nas lojas. Chame no WhatsApp ou venha nos visitar.</p>
         </div>
-      </footer>
+        <div className="catalog-cta-actions">
+          <a className="button button-white" href={whatsapp} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
+          <Link className="button button-ghost" href="/#lojas">Ver endereços das lojas <ArrowRight size={17} /></Link>
+        </div>
+      </section>
+
+      <SiteFooter homeHref="/" />
     </main>
   );
 }
