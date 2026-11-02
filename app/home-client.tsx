@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, Award, Clock3, MapPin, Menu, Phone, X } from "lucide-react";
-import { contactLinks, stores } from "@/lib/site-data";
+import { stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
 import ProductCard from "./product-card";
 import SiteFooter, { mapsUrl } from "./site-footer";
@@ -226,10 +226,7 @@ export default function HomeClient({ products, galleryImages, settings: initialS
             <p className="label">Na vitrine agora</p>
             <h2 id="produtos-titulo">Escolhidos a dedo<br />pela nossa equipe.</h2>
           </div>
-          <div className="section-links">
-            <Link className="text-link" href="/produtos">Ver todos os produtos <ArrowRight size={15} /></Link>
-            <a className="text-link" href={contactLinks.instagram.url} target="_blank" rel="noopener noreferrer">Mais novidades no Instagram <ArrowUpRight size={15} /></a>
-          </div>
+          <Link className="text-link" href="/produtos" target="_blank" rel="noopener noreferrer">Ver todos os produtos <ArrowRight size={15} /></Link>
         </div>
         {products.length === 0 && (
           <p className="products-empty">Nenhum produto cadastrado no momento.</p>
