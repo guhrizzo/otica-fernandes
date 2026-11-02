@@ -1,4 +1,6 @@
 import { supabase } from "./supabase";
+import { defaultStoreHours, parseStoreHours } from "./store-hours";
+import type { StoreHours } from "./store-hours";
 
 export type Product = {
   id: string;
@@ -138,4 +140,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   const { data, error } = await supabase.from("site_settings").select("*").single();
   if (error || !data) return fallbackSettings;
   return { ...fallbackSettings, ...data };
+}
+
+/** Horário de funcionamento cadastrado no painel (tabela store_hours). Sem a tabela, usa o horário padrão. */
+export async function getStoreHours(): Promise<StoreHours> {
+  if (!supabase) return defaultStoreHours;
+  const { data, error } = await supabase.from("store_hours").select("schedule, force_closed, notice").maybeSingle();
+  if (error || !data) return defaultStoreHours;
+  return parseStoreHours(data);
 }

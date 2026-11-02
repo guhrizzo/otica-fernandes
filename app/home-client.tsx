@@ -7,8 +7,10 @@ import { ArrowRight, ArrowUpRight, Award, Clock3, MapPin, Menu, Phone, X } from 
 import { stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
 import ProductCard from "./product-card";
+import StoreStatus from "./store-status";
 import SiteFooter, { mapsUrl } from "./site-footer";
-import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data";
+import type { GalleryImage, Product, SiteSettings } from "@/lib/site-data";
+import type { StoreHours } from "@/lib/store-hours";
 import { pickPreviewSettings } from "@/lib/preview-settings";
 
 const categories = [
@@ -32,9 +34,10 @@ type HomeClientProps = {
   products: Product[];
   galleryImages: GalleryImage[];
   settings: SiteSettings;
+  storeHours: StoreHours;
 };
 
-export default function HomeClient({ products, galleryImages, settings: initialSettings }: HomeClientProps) {
+export default function HomeClient({ products, galleryImages, settings: initialSettings, storeHours }: HomeClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [settings, setSettings] = useState(initialSettings);
   const cities = Array.from(new Set(stores.map((store) => store.city)));
@@ -130,6 +133,7 @@ export default function HomeClient({ products, galleryImages, settings: initialS
         <nav className="desktop-nav" aria-label="Navegação principal">
           {navLinks.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}
         </nav>
+        <StoreStatus hours={storeHours} />
         <a className="button button-red header-cta" data-edit="whatsapp_number" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} aria-controls="menu-mobile">
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -196,7 +200,7 @@ export default function HomeClient({ products, galleryImages, settings: initialS
           <span className="fact-icon" aria-hidden><Clock3 size={26} /></span>
           <div className="fact-body">
             <small>Horário</small>
-            <strong>Seg a Sáb</strong>
+            <StoreStatus hours={storeHours} variant="band" />
             <span data-edit="hours_weekday">{settings.hours_weekday} · {settings.hours_saturday}</span>
           </div>
         </div>
@@ -264,7 +268,10 @@ export default function HomeClient({ products, galleryImages, settings: initialS
             <p className="label">Nossas lojas</p>
             <h2 id="lojas-titulo">Escolha a loja<br />mais perto de você.</h2>
           </div>
-          <p className="stores-hours"><Clock3 size={17} aria-hidden /> <span data-edit="hours_weekday">{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
+          <div className="stores-hours-block">
+            <StoreStatus hours={storeHours} />
+            <p className="stores-hours"><Clock3 size={17} aria-hidden /> <span data-edit="hours_weekday">{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
+          </div>
         </div>
         <div className="stores-grid">
           {stores.map((store) => (
