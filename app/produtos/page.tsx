@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getProducts, getSiteSettings } from "@/lib/site-data";
+import { getProducts, getSiteSettings, getStoreHours } from "@/lib/site-data";
 import ProdutosClient from "./produtos-client";
 
 export const revalidate = 60;
@@ -10,6 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ProdutosPage() {
-  const [products, settings] = await Promise.all([getProducts(), getSiteSettings()]);
-  return <ProdutosClient products={products} whatsappNumber={settings.whatsapp_number} whatsappMessage={settings.whatsapp_message} />;
+  const [products, settings, storeHours] = await Promise.all([getProducts(), getSiteSettings(), getStoreHours()]);
+  return <ProdutosClient products={products} whatsappNumber={settings.whatsapp_number} whatsappMessage={settings.whatsapp_message} storeHours={storeHours} />;
 }

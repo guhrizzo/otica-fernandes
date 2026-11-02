@@ -192,6 +192,34 @@ h1, h2, h3 { font-stretch: 125%; font-weight: 800; letter-spacing: -.02em; }
 
 /* Lojas */
 .stores-section { background: var(--mist); }
+/* Selo "Aberto agora / Fechado", alimentado pelo painel (tabela store_hours). */
+.store-status { align-items: center; border: 1.5px solid var(--line); display: inline-flex; font-size: 13px; font-weight: 700; gap: 8px; line-height: 1; padding: 8px 14px; white-space: nowrap; }
+.store-status-detail { color: #5f5a56; font-weight: 600; }
+.store-status.is-open { background: #effaf2; border-color: #b6e3c4; color: #14532d; }
+.store-status.is-open .store-status-detail { color: #2f6b45; }
+.store-status.is-closed { background: #fdf0f2; border-color: #efbcc5; color: var(--deep-red); }
+.store-status.is-closed .store-status-detail { color: #8f1a2c; }
+.store-status-dot { background: #9a958f; border-radius: 50%; display: inline-block; flex: none; height: 9px; width: 9px; }
+.is-open .store-status-dot { animation: status-pulse 2s ease-out infinite; background: #16a34a; }
+.is-closed .store-status-dot { background: var(--red); }
+@keyframes status-pulse { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.55); } 70%, 100% { box-shadow: 0 0 0 8px rgba(22,163,74,0); } }
+.site-header .store-status { margin-left: 0; }
+.store-status-title { align-items: center; display: flex; gap: 10px; }
+.store-status-title .store-status-dot { border: 2px solid white; height: 14px; width: 14px; }
+.store-status-title.is-open .store-status-dot { animation-name: status-pulse-light; background: #4ade80; }
+.store-status-title.is-closed .store-status-dot { background: var(--ink); }
+@keyframes status-pulse-light { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.6); } 70%, 100% { box-shadow: 0 0 0 9px rgba(255,255,255,0); } }
+.store-status-notice { background: rgba(255,255,255,.18); font-size: 13px !important; font-weight: 600; margin-top: 4px; padding: 6px 10px; width: fit-content; }
+.stores-hours-block { align-items: flex-start; display: flex; flex-direction: column; gap: 14px; }
+@media (prefers-reduced-motion: reduce) { .store-status-dot { animation: none !important; } }
+@media (max-width: 900px) {
+  .site-header .store-status { margin-left: auto; }
+  .site-header .store-status ~ .menu-button, .site-header .store-status ~ .header-home { margin-left: 0; }
+}
+@media (max-width: 700px) {
+  .store-status { font-size: 12px; padding: 7px 10px; }
+  .store-status-detail { display: none; }
+}
 .stores-hours { align-items: start; color: var(--graphite); display: flex; font-size: 15px; gap: 10px; line-height: 1.55; margin: 0; }
 .stores-hours svg { color: var(--red); flex: none; margin-top: 3px; }
 .stores-grid { display: grid; gap: 24px; grid-template-columns: repeat(3, 1fr); }

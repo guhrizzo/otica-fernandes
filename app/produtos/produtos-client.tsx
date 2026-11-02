@@ -6,8 +6,10 @@ import { useMemo, useState } from "react";
 import { ArrowRight, ArrowUpRight, Package, Search } from "lucide-react";
 import ProductCard from "../product-card";
 import SiteFooter from "../site-footer";
+import StoreStatus from "../store-status";
 import { stores } from "@/lib/site-data";
 import type { Product } from "@/lib/site-data";
+import type { StoreHours } from "@/lib/store-hours";
 
 type Sort = "default" | "price-asc" | "price-desc";
 
@@ -22,9 +24,9 @@ const navLinks = [
 // Compara sem acento e sem diferença de maiúscula: "relogio" encontra "Relógio".
 const normalize = (value: string) => value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 
-type Props = { products: Product[]; whatsappNumber: string; whatsappMessage: string };
+type Props = { products: Product[]; whatsappNumber: string; whatsappMessage: string; storeHours: StoreHours };
 
-export default function ProdutosClient({ products, whatsappNumber, whatsappMessage }: Props) {
+export default function ProdutosClient({ products, whatsappNumber, whatsappMessage, storeHours }: Props) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(ALL);
   const [store, setStore] = useState(ALL);
@@ -63,6 +65,7 @@ export default function ProdutosClient({ products, whatsappNumber, whatsappMessa
         <nav className="desktop-nav" aria-label="Navegação principal">
           {navLinks.map((link) => <Link href={link.href} key={link.href} aria-current={link.href === "/produtos" ? "page" : undefined}>{link.label}</Link>)}
         </nav>
+        <StoreStatus hours={storeHours} />
         <Link className="header-home" href="/">Início <ArrowRight size={15} aria-hidden /></Link>
         <a className="button button-red header-cta" href={whatsapp} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
       </header>
