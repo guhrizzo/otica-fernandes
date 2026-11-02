@@ -7,6 +7,7 @@ import { contactLinks, stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
 import ProductPhotos from "./product-photos";
 import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data";
+import { pickPreviewSettings } from "@/lib/preview-settings";
 
 const categories = [
   { label: "Óculos de grau e de sol", detail: "Armações para o dia a dia, para o trabalho e para o sol.", photo: "/gallery/salao-atendimento.jpg", alt: "Salão com expositores de armações", ask: "Olá! Quero ver opções de óculos." },
@@ -62,9 +63,50 @@ type HomeClientProps = {
   settings: SiteSettings;
 };
 
-export default function HomeClient({ products, galleryImages, settings }: HomeClientProps) {
+export default function HomeClient({ products, galleryImages, settings: initialSettings }: HomeClientProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [settings, setSettings] = useState(initialSettings);
   const cities = Array.from(new Set(stores.map((store) => store.city)));
+
+  // Prévia ao vivo: só dentro do iframe do painel e só com mensagens da origem dele.
+  useEffect(() => {
+    const adminOrigin = process.env.NEXT_PUBLIC_ADMIN_ORIGIN;
+    if (!adminOrigin || window.parent === window) return;
+
+    const style = document.createElement("style");
+    document.head.appendChild(style);
+    const paint = (selected: string | null) => {
+      style.textContent =
+        "[data-edit]{cursor:pointer}" +
+        "[data-edit]:hover{outline:2px dashed #e11d2e;outline-offset:3px}" +
+        (selected ? `[data-edit="${CSS.escape(selected)}"]{outline:2px solid #e11d2e!important;outline-offset:3px}` : "");
+    };
+    paint(null);
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== adminOrigin) return;
+      if (event.data?.type === "otica:preview-settings") {
+        setSettings((prev) => ({ ...prev, ...pickPreviewSettings(event.data.settings) }));
+      } else if (event.data?.type === "otica:preview-selected") {
+        paint(typeof event.data.field === "string" ? event.data.field : null);
+      }
+    };
+    const onClick = (event: MouseEvent) => {
+      const el = (event.target as Element | null)?.closest<HTMLElement>("[data-edit]");
+      if (!el) return;
+      event.preventDefault();
+      event.stopPropagation();
+      window.parent.postMessage({ type: "otica:preview-select", field: el.dataset.edit }, adminOrigin);
+    };
+    window.addEventListener("message", onMessage);
+    document.addEventListener("click", onClick, true);
+    window.parent.postMessage({ type: "otica:preview-ready" }, adminOrigin);
+    return () => {
+      window.removeEventListener("message", onMessage);
+      document.removeEventListener("click", onClick, true);
+      style.remove();
+    };
+  }, []);
 
   useEffect(() => {
     const revealEls = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
@@ -117,7 +159,7 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
         <nav className="desktop-nav" aria-label="Navegação principal">
           {navLinks.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}
         </nav>
-        <a className="button button-red header-cta" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
+        <a className="button button-red header-cta" data-edit="whatsapp_number" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp</a>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? "Fechar menu" : "Abrir menu"} aria-expanded={menuOpen} aria-controls="menu-mobile">
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
           <span>{menuOpen ? "Fechar" : "Menu"}</span>
@@ -133,8 +175,8 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
           ))}
         </nav>
         <div className="mobile-menu-footer">
-          <a className="button button-red" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
-          <p><Clock3 size={16} aria-hidden /> <span>{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
+          <a className="button button-red" data-edit="whatsapp_number" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
+          <p><Clock3 size={16} aria-hidden /> <span data-edit="hours_weekday">{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
           <p><MapPin size={16} aria-hidden /> <span>{stores.length} lojas em {cities.join(" e ")}</span></p>
         </div>
       </div>
@@ -147,12 +189,12 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
               <span className="chart-line chart-1"><span className="chart-num" aria-hidden>1</span><span className="chart-text">Enxergue</span><span className="chart-ratio" aria-hidden>20/200</span></span>
               <span className="chart-line chart-2"><span className="chart-num" aria-hidden>2</span><span className="chart-text">o seu melhor</span><span className="chart-ratio" aria-hidden>20/100</span></span>
             </h1>
-            <p className="chart-line chart-3"><span className="chart-num" aria-hidden>3</span><span className="chart-text">{settings.hero_eyebrow}</span><span className="chart-ratio" aria-hidden>20/50</span></p>
+            <p className="chart-line chart-3"><span className="chart-num" aria-hidden>3</span><span className="chart-text" data-edit="hero_eyebrow">{settings.hero_eyebrow}</span><span className="chart-ratio" aria-hidden>20/50</span></p>
             <p className="chart-line chart-4"><span className="chart-num" aria-hidden>4</span><span className="chart-text">Óculos · Joias · Relógios · Semijoias</span><span className="chart-ratio" aria-hidden>20/20</span></p>
           </div>
-          <p className="hero-text">{settings.hero_text}</p>
+          <p className="hero-text" data-edit="hero_text">{settings.hero_text}</p>
           <div className="hero-actions">
-            <a className="button button-red" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
+            <a className="button button-red" data-edit="whatsapp_number" href={whatsappUrl(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">Falar no WhatsApp <ArrowUpRight size={17} /></a>
             <a className="button button-outline" href="#lojas">Ver endereços das lojas <ArrowRight size={17} /></a>
           </div>
         </div>
@@ -163,8 +205,8 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
 
       <section className="facts" aria-label="Informações rápidas">
         <p><strong>{stores.length} lojas</strong><span>{cities.join(" e ")}</span></p>
-        <p><strong>Desde 1976</strong><span>{settings.story_years} anos de atendimento em família</span></p>
-        <p><strong><Clock3 size={16} aria-hidden /> Horário</strong><span>{settings.hours_weekday} · {settings.hours_saturday}</span></p>
+        <p><strong>Desde 1976</strong><span data-edit="story_years">{settings.story_years} anos de atendimento em família</span></p>
+        <p><strong><Clock3 size={16} aria-hidden /> Horário</strong><span data-edit="hours_weekday">{settings.hours_weekday} · {settings.hours_saturday}</span></p>
       </section>
 
       <section className="section categories-section reveal" aria-labelledby="categorias-titulo">
@@ -224,9 +266,9 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
         <div className="story-copy">
           <p className="label label-light">Nossa história</p>
           <h2 id="historia-titulo">Uma família cuidando do seu olhar desde 1976.</h2>
-          <p>{settings.story_text}</p>
+          <p data-edit="story_text">{settings.story_text}</p>
           <dl className="story-points">
-            <div><dt>{settings.story_years}</dt><dd>anos de loja</dd></div>
+            <div><dt data-edit="story_years">{settings.story_years}</dt><dd>anos de loja</dd></div>
             <div><dt>{stores.length}</dt><dd>lojas na região</dd></div>
             <div><dt>{cities.length}</dt><dd>cidades atendidas</dd></div>
           </dl>
@@ -247,7 +289,7 @@ export default function HomeClient({ products, galleryImages, settings }: HomeCl
             <p className="label">Nossas lojas</p>
             <h2 id="lojas-titulo">Escolha a loja<br />mais perto de você.</h2>
           </div>
-          <p className="stores-hours"><Clock3 size={17} aria-hidden /> <span>{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
+          <p className="stores-hours"><Clock3 size={17} aria-hidden /> <span data-edit="hours_weekday">{settings.hours_weekday}<br />{settings.hours_saturday}</span></p>
         </div>
         <div className="stores-grid">
           {stores.map((store) => (
