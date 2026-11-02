@@ -55,12 +55,6 @@ export const contactLinks = {
   facebook: { handle: "oticafernandes", url: "https://www.facebook.com/oticafernandes" },
 };
 
-const fallbackProducts: Product[] = [
-  { id: "fallback-1", name: "Solar Acetato", type: "Óculos de sol", price: 289.9, image_url: "/otica-hero.png" },
-  { id: "fallback-2", name: "Classic Gold", type: "Relógio feminino", price: 459.9, image_url: "/otica-hero.png" },
-  { id: "fallback-3", name: "Brinco Luz", type: "Semijoia", price: 129.9, image_url: "/otica-hero.png" },
-];
-
 const fallbackGallery: GalleryImage[] = [
   { id: "fallback-1", url: "/gallery/fachada-portico.jpg", alt: "Pórtico vermelho na entrada da Ótica Fernandes" },
   { id: "fallback-2", url: "/gallery/salao-atendimento.jpg", alt: "Salão de atendimento com poltronas e expositores de óculos" },
@@ -69,7 +63,6 @@ const fallbackGallery: GalleryImage[] = [
   { id: "fallback-5", url: "/gallery/entrada-loja-2.jpg", alt: "Entrada da loja com tapete Fernandes e expositores" },
   { id: "fallback-6", url: "/gallery/parede-relogios.jpg", alt: "Parede de relógios Lince, Mondaine e outras marcas" },
   { id: "fallback-7", url: "/gallery/torres-orient.jpg", alt: "Torres de vidro com relógios Orient" },
-  { id: "fallback-8", url: "/gallery/cantinho-criancas.jpg", alt: "Cantinho das crianças com mesa e cadeiras vermelhas" },
 ];
 
 export const fallbackSettings: SiteSettings = {
@@ -85,13 +78,13 @@ export const fallbackSettings: SiteSettings = {
 };
 
 export async function getProducts(): Promise<Product[]> {
-  if (!supabase) return fallbackProducts;
+  if (!supabase) return [];
   // Banco ainda sem as colunas novas (description, images): tenta de novo sem elas
   const data =
     (await selectProducts("id, name, type, price, image_url, description, images")) ??
     (await selectProducts("id, name, type, price, image_url, description")) ??
     (await selectProducts("id, name, type, price, image_url"));
-  if (!data || data.length === 0) return fallbackProducts;
+  if (!data || data.length === 0) return [];
   return withAvailability(data);
 }
 
