@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, Award, Clock3, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { contactLinks, stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
-import ProductPhotos from "./product-photos";
+import ProductCard from "./product-card";
 import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data";
 import { pickPreviewSettings } from "@/lib/preview-settings";
 
@@ -252,31 +253,16 @@ export default function HomeClient({ products, galleryImages, settings: initialS
             <p className="label">Na vitrine agora</p>
             <h2 id="produtos-titulo">Escolhidos a dedo<br />pela nossa equipe.</h2>
           </div>
-          <a className="text-link" href={contactLinks.instagram.url} target="_blank" rel="noopener noreferrer">Mais novidades no Instagram <ArrowUpRight size={15} /></a>
+          <div className="section-links">
+            <Link className="text-link" href="/produtos">Ver todos os produtos <ArrowRight size={15} /></Link>
+            <a className="text-link" href={contactLinks.instagram.url} target="_blank" rel="noopener noreferrer">Mais novidades no Instagram <ArrowUpRight size={15} /></a>
+          </div>
         </div>
         {products.length === 0 && (
           <p className="products-empty">Nenhum produto cadastrado no momento.</p>
         )}
         <div className="products-grid">
-          {products.map((product) => (
-            <article className="product-card" key={product.id}>
-              <ProductPhotos images={product.images?.length ? product.images : product.image_url ? [product.image_url] : []} name={product.name} />
-              <div className="product-meta">
-                <p>{product.type}</p>
-                <h3>{product.name}</h3>
-                {product.description && <p className="product-description">{product.description}</p>}
-                <strong>{priceFormatter.format(product.price)}</strong>
-                {product.available_at && (
-                  <span className={`product-stock${product.available_at.length === 0 ? " is-out" : ""}`}>
-                    {product.available_at.length === 0
-                      ? "Sob encomenda · consulte"
-                      : `${(product.stock_total ?? 0) <= 2 ? "Últimas unidades" : "Disponível"} na ${formatStoreList(product.available_at)}`}
-                  </span>
-                )}
-              </div>
-              <a className="product-ask" href={whatsappUrl(settings.whatsapp_number, `Olá! Tenho interesse no ${product.name} (${priceFormatter.format(product.price)}).`)} target="_blank" rel="noopener noreferrer">Tenho interesse <ArrowUpRight size={15} /></a>
-            </article>
-          ))}
+          {products.map((product) => <ProductCard key={product.id} product={product} whatsappNumber={settings.whatsapp_number} />)}
         </div>
       </section>
 

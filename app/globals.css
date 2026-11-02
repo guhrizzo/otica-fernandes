@@ -106,6 +106,25 @@ h1, h2, h3 { font-stretch: 125%; font-weight: 800; letter-spacing: -.02em; }
 .category-link { align-items: center; color: var(--red); display: inline-flex; font-size: 14px; font-weight: 700; gap: 6px; margin-top: auto; }
 
 .products-section { background: var(--mist); }
+.section-links { display: flex; flex-wrap: wrap; gap: 14px 28px; }
+.catalog-title { font-size: clamp(34px, 5vw, 60px); line-height: 1.05; margin: 12px 0 0; }
+.catalog-toolbar { align-items: flex-end; display: flex; flex-wrap: wrap; gap: 14px; margin-top: 8px; }
+.catalog-search { align-items: center; border: 1.5px solid var(--ink); display: flex; flex: 1 1 280px; gap: 10px; padding: 0 16px; }
+.catalog-search input { background: none; border: 0; flex: 1; font: inherit; font-size: 15px; min-width: 0; outline: 0; padding: 15px 0; }
+.catalog-search:focus-within { border-color: var(--red); box-shadow: 0 0 0 3px rgba(200,16,46,.15); }
+.catalog-select { display: flex; flex-direction: column; gap: 6px; }
+.catalog-select span { color: #5f5a56; font-size: 11px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.catalog-select select { background: white; border: 1.5px solid var(--ink); font: inherit; font-size: 15px; min-width: 170px; padding: 13px 14px; }
+.catalog-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.catalog-chip { background: white; border: 1.5px solid var(--ink); color: var(--ink); cursor: pointer; font: inherit; font-size: 14px; font-weight: 700; padding: 10px 18px; }
+.catalog-chip:hover { border-color: var(--red); color: var(--red); }
+.catalog-chip.is-active { background: var(--ink); border-color: var(--ink); color: white; }
+.catalog-count { align-items: center; color: #5f5a56; display: flex; font-size: 14px; gap: 16px; margin: 26px 0 20px; }
+.catalog-clear { background: none; border: 0; border-bottom: 1.5px solid var(--red); color: var(--red); cursor: pointer; font: inherit; font-size: 14px; font-weight: 700; padding: 0 0 2px; }
+@media (max-width: 800px) {
+  .catalog-select { flex: 1 1 140px; }
+  .catalog-select select { min-width: 0; width: 100%; }
+}
 .products-empty { color: #5f5a56; font-size: 16px; line-height: 1.6; margin: 0; max-width: 560px; }
 .products-grid { display: grid; gap: 24px; grid-template-columns: repeat(3, 1fr); }
 .product-card { background: var(--paper); display: flex; flex-direction: column; }
