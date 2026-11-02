@@ -32,10 +32,9 @@ export default function GalleryMasonry({ images }: { images: GalleryImage[] }) {
             <Image
               src={image.url}
               alt={image.alt}
-              width={0}
-              height={0}
-              sizes="(max-width: 700px) 50vw, 33vw"
-              style={{ width: "100%", height: "auto" }}
+              fill
+              sizes="(max-width: 700px) 100vw, 100vw"
+              style={{ objectFit: "cover" }}
             />
             <span className="gallery-tile-icon" aria-hidden>
               <ZoomIn size={18} />

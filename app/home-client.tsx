@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ArrowRight, ArrowUpRight, Clock3, Mail, MapPin, Menu, Phone, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Award, Clock3, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { contactLinks, stores } from "@/lib/site-data";
 import GalleryMasonry from "./gallery-masonry";
 import ProductPhotos from "./product-photos";
@@ -10,13 +10,10 @@ import type { GalleryImage, Product, SiteSettings, Store } from "@/lib/site-data
 import { pickPreviewSettings } from "@/lib/preview-settings";
 
 const categories = [
-  { label: "Óculos de grau e de sol", detail: "Armações para o dia a dia, para o trabalho e para o sol.", photo: "/gallery/salao-atendimento.jpg", alt: "Salão com expositores de armações", ask: "Olá! Quero ver opções de óculos." },
+  { label: "Óculos de grau e de sol", detail: "Armações para o dia a dia, para o trabalho e para o sol. Seu óculos pronto em 1 hora.", photo: "/gallery/salao-atendimento.jpg", alt: "Salão com expositores de armações", ask: "Olá! Quero ver opções de óculos." },
   { label: "Relógios", detail: "Modelos clássicos, esportivos e smartwatches.", photo: "/gallery/parede-relogios.jpg", alt: "Parede de relógios das marcas Lince, Mondaine e Orient", ask: "Olá! Quero ver opções de relógios." },
-  { label: "Joias e semijoias", detail: "Anéis, brincos, correntes e peças para presentear.", photo: "/gallery/vitrine-joias.jpg", alt: "Vitrine de vidro com joias e semijoias", ask: "Olá! Quero ver opções de joias e semijoias." },
+  { label: "Joias e semijoias", detail: "Joias em ouro 18k, semijoias, anéis de formatura e peças para presentear.", photo: "/gallery/vitrine-joias.jpg", alt: "Vitrine de vidro com joias e semijoias", ask: "Olá! Quero ver opções de joias e semijoias." },
 ];
-
-// Marcas que aparecem nos expositores das lojas.
-const brands = ["Ray-Ban", "Orient", "Mondaine", "Lince", "Condor", "X-Watch", "Speedo", "Bulget", "Tecnol"];
 
 const navLinks = [
   { href: "#produtos", label: "Produtos" },
@@ -181,6 +178,7 @@ export default function HomeClient({ products, galleryImages, settings: initialS
         </div>
       </div>
 
+      <div className="first-screen">
       <section className="hero" id="inicio">
         <div className="hero-copy">
           {/* A abertura imita uma tabela de exame de vista: cada linha menor que a anterior. */}
@@ -204,10 +202,32 @@ export default function HomeClient({ products, galleryImages, settings: initialS
       </section>
 
       <section className="facts" aria-label="Informações rápidas">
-        <p><strong>{stores.length} lojas</strong><span>{cities.join(" e ")}</span></p>
-        <p><strong>Desde 1976</strong><span data-edit="story_years">{settings.story_years} anos de atendimento em família</span></p>
-        <p><strong><Clock3 size={16} aria-hidden /> Horário</strong><span data-edit="hours_weekday">{settings.hours_weekday} · {settings.hours_saturday}</span></p>
+        <div className="fact">
+          <span className="fact-icon" aria-hidden><MapPin size={26} /></span>
+          <div className="fact-body">
+            <small>Onde estamos</small>
+            <strong>{stores.length} lojas</strong>
+            <span>{cities.join(" e ")}</span>
+          </div>
+        </div>
+        <div className="fact">
+          <span className="fact-icon" aria-hidden><Award size={26} /></span>
+          <div className="fact-body">
+            <small>Tradição</small>
+            <strong>Desde 1976</strong>
+            <span data-edit="story_years">{settings.story_years} anos de atendimento em família</span>
+          </div>
+        </div>
+        <div className="fact">
+          <span className="fact-icon" aria-hidden><Clock3 size={26} /></span>
+          <div className="fact-body">
+            <small>Horário</small>
+            <strong>Seg a Sáb</strong>
+            <span data-edit="hours_weekday">{settings.hours_weekday} · {settings.hours_saturday}</span>
+          </div>
+        </div>
       </section>
+      </div>
 
       <section className="section categories-section reveal" aria-labelledby="categorias-titulo">
         <div className="section-heading">
@@ -224,10 +244,6 @@ export default function HomeClient({ products, galleryImages, settings: initialS
             </a>
           ))}
         </div>
-        <div className="brands">
-          <p className="label">Marcas nas nossas vitrines</p>
-          <ul>{brands.map((brand) => <li key={brand}>{brand}</li>)}</ul>
-        </div>
       </section>
 
       <section className="section products-section reveal" id="produtos" aria-labelledby="produtos-titulo">
@@ -238,6 +254,9 @@ export default function HomeClient({ products, galleryImages, settings: initialS
           </div>
           <a className="text-link" href={contactLinks.instagram.url} target="_blank" rel="noopener noreferrer">Mais novidades no Instagram <ArrowUpRight size={15} /></a>
         </div>
+        {products.length === 0 && (
+          <p className="products-empty">Nenhum produto cadastrado no momento.</p>
+        )}
         <div className="products-grid">
           {products.map((product) => (
             <article className="product-card" key={product.id}>
